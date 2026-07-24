@@ -1,19 +1,25 @@
 # AI Authority Engine — Student Setup SOP (Ingestion)
 
-**What you are building in this SOP:** an automated system that watches your
-podcast feed, and every time a new episode drops, it downloads the audio,
-transcribes it into text you own, and files that transcript neatly into a Notion
-database. No copy-pasting, no manual downloads, no "which tool can read YouTube"
-headaches. This is the foundation. Everything else (turning one episode into 18
-pieces of content) gets built on top of it later.
+**What this is:** a done-for-you service you run for your clients. When your
+client publishes a new podcast episode, this system automatically downloads the
+audio, transcribes it into text, and files that transcript neatly into a Notion
+knowledge base built for that client. No copy-pasting, no manual downloads, no
+"which tool can read YouTube" headaches. This is the foundation. Everything else
+(turning one episode into 18 pieces of content) gets built on top of it later.
 
-**Who this is for:** a student who is comfortable following steps carefully. You
-do not need to know how to code. You do need to be willing to copy commands
-exactly and read the screen. Budget about 45 to 60 minutes for your first setup.
-You only do this setup once.
+**Who runs it:** you, the agency owner. Your client never touches it and never
+needs an account. You set it up once per client, and after that it runs itself.
+You can run it for as many clients as you like. Each client gets their own Notion
+space and their own copy of these settings, so their content never mixes.
 
-**What it costs to run:** roughly $18 a month in transcription for a weekly show,
-plus a Notion plan (free tier works to start). We will note where the money goes.
+**Who this is for reading:** anyone comfortable following steps carefully. You do
+not need to know how to code, just to copy commands exactly and read the screen.
+Budget about 45 to 60 minutes the first time. After your first client, adding
+another takes about 10 minutes.
+
+**What it costs to run:** roughly $18 a month in transcription per weekly show,
+plus a Notion plan (the free tier works to start). We will note where the money
+goes.
 
 ---
 
@@ -21,8 +27,9 @@ plus a Notion plan (free tier works to start). We will note where the money goes
 
 Here is the whole flow in plain English:
 
-1. Your podcast has an **RSS feed**. That is a public web address that lists every
-   episode and a direct link to each episode's audio file. Every podcast has one.
+1. Your client's podcast has an **RSS feed**. That is a public web address that
+   lists every episode and a direct link to each episode's audio file. Every
+   podcast has one, and you do not need any login from your client to use it.
 2. Our tool **checks that feed** on a schedule. When it sees an episode it has not
    processed yet, it grabs the audio link.
 3. It **downloads the audio** and shrinks it (a 32 MB episode becomes about 12 MB)
@@ -34,10 +41,11 @@ Here is the whole flow in plain English:
 
 That is it. Detect, transcribe, store. Five steps, fully hands-off once it is set up.
 
-> **Why this matters:** AI search tools (ChatGPT, Claude, Perplexity) only treat you
-> as "the answer" when your ideas exist as text, in multiple places, that they can
-> read. A transcript is the raw material for all of that. This system manufactures
-> that raw material automatically, every week, without you lifting a finger.
+> **Why this matters (the pitch to your client):** AI search tools (ChatGPT, Claude,
+> Perplexity) only treat someone as "the answer" when their ideas exist as text, in
+> multiple places, that the models can read. A transcript is the raw material for all
+> of that. This system manufactures that raw material for your client automatically,
+> every week, without them lifting a finger. That is the service you are selling.
 
 ---
 
@@ -174,12 +182,13 @@ PILOT_CLIENT_NAME=Your Client Name
 
 ---
 
-## Part 5 — Find your podcast's RSS feed
+## Part 5 — Find your client's RSS feed
 
-Every podcast has a public RSS feed, even if the host hides it. Here is the reliable
-way to find it from an Apple Podcasts link.
+Every podcast has a public RSS feed, even if the host hides it. You can get this
+yourself without asking your client for anything. Here is the reliable way to find it
+from an Apple Podcasts link.
 
-1. Find your show on **podcasts.apple.com** and copy the page's web address. In it
+1. Find your client's show on **podcasts.apple.com** and copy the page's web address. In it
    there is a number after `id`, for example `.../id1823417933`. Copy that number.
 2. In your web browser's address bar, type this, replacing the number with yours, and
    press Enter:
@@ -191,9 +200,9 @@ way to find it from an Apple Podcasts link.
    web address in quotes. That address is your RSS feed.
 4. Copy that feed address into your `.env` file as the value of `PILOT_FEED_URL`. Save.
 
-> If your show is only on Spotify or YouTube, the feed still usually exists through
-> the original host (Anchor, Buzzsprout, Libsyn, and so on). Ask your coach if you get
-> stuck, this is the one step where shows differ.
+> If your client's show is only on Spotify or YouTube, the feed still usually exists
+> through the original host (Anchor, Buzzsprout, Libsyn, and so on). Ask your coach if
+> you get stuck, this is the one step where shows differ.
 
 ---
 
@@ -232,8 +241,8 @@ This just checks your feed and shows what is new. It does not cost anything.
 npm run detect
 ```
 
-You should see your latest episodes listed, with the newest marked `NEW`. If you see
-your show's episodes, your feed is connected correctly.
+You should see the latest episodes listed, with the newest marked `NEW`. If you see
+your client's episodes, your feed is connected correctly.
 
 ### 7.2 Run the real thing
 
@@ -259,28 +268,48 @@ Running it again will not create duplicates. It skips anything already in Notion
 
 ---
 
-## Part 8 — Keep it running automatically
+## Part 8 — Set it to run itself, once a day
 
-Right now the tool only runs when you type the command. For it to be truly hands-off,
-it needs to run on a schedule on a computer that never sleeps.
+Right now the tool only runs when you type the command. You do not want to remember
+to do that. The good news: a podcast drops weekly, so a **once-a-day check is plenty**.
+You do not need anything running every few minutes, and you do not need a server.
 
-**The simplest reliable option:** pick a computer that stays on (a desktop, a mini
-Mac, or a cheap always-on server your coach recommends) and set the ingest command to
-run every 30 minutes.
+**The simple way (recommended): let Claude Code run it for you.**
 
-- On Mac or Linux you do this with a "cron job." Run `crontab -e` and add this line
-  (put your real folder path in):
+If you use Claude Code (the same tool you built this in), you can hand it the daily
+job in one sentence. Open Claude Code in the project folder and say:
+
+> "Every day at 9am, run `npm run ingest` in this project and tell me what it found."
+
+Claude Code sets up the daily scheduled task for you. There is no cron syntax to learn
+and nothing to configure. It checks the feed each morning, transcribes anything new,
+files it in Notion, and reports back. That is the whole job, handled.
+
+**If you are not using Claude Code**, the fallback is a once-a-day task on any computer
+that is on during that time:
+
+- Mac or Linux: run `crontab -e` and add this one line (put your real folder path in).
+  This runs it every day at 9am:
 
   ```
-  */30 * * * * cd /full/path/to/ai-authority-engine && npm run ingest >> logs/cron.log 2>&1
+  0 9 * * * cd /full/path/to/ai-authority-engine && npm run ingest >> logs/cron.log 2>&1
   ```
 
-- On Windows you use **Task Scheduler** to run `npm run ingest` in the project folder
-  every 30 minutes.
+- Windows: use **Task Scheduler** to run `npm run ingest` in the project folder once a
+  day.
 
-> **Important:** a laptop that goes to sleep will miss the episode drop and you will
-> not know. If you cannot dedicate an always-on machine, ask your coach about a small
-> cloud server, which costs a few dollars a month and never sleeps.
+> Whichever way you choose, the machine just needs to be **awake at that one time each
+> day**. If the computer is asleep at 9am, the check is missed (it catches up the next
+> day, but the transcript arrives a day late). If you cannot guarantee that, the Claude
+> Code option above is the most reliable, or ask your coach about a small always-on
+> setup.
+
+### Running it for more than one client
+
+Each client is its own setup: their own Notion page, their own databases, their own
+feed. To add a second client, make a second copy of the project folder, and repeat
+Parts 1.3 and 4 to 7 with that client's details. Then give that folder its own daily
+scheduled task the same way. Ten minutes per new client, and they never overlap.
 
 ---
 
@@ -315,9 +344,10 @@ something did not work, that file tells you what happened. Here are the common i
 
 ## What you have accomplished
 
-You now own an automated transcript machine. Every episode your show publishes becomes
-a clean, searchable transcript in Notion without any manual work. This is the hardest
+You now have an automated transcript machine you can run for any client. Every episode
+your client publishes becomes a clean, searchable transcript in Notion without any
+manual work from you or them, checked and filed for you once a day. This is the hardest
 and most valuable part of the whole system, and it is done. In the next stage you will
 learn to turn each of these transcripts into a content brief and 18 ready-to-publish
-assets, all from the same source. But none of that works without this foundation, and
-now you have it.
+assets, all from the same source. That is the deliverable your clients actually pay
+for. But none of it works without this foundation, and now you have it.
