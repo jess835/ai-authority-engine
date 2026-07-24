@@ -51,15 +51,12 @@ everything after this happens inside Claude Code.
 
 ## Step 2 — Get the project onto your computer
 
-Your coach will give you one of two things:
+Open Claude Code and tell it, word for word:
 
-- **A repository link** (from GitHub). Open Claude Code, and tell it:
-  > "Clone this repo and open it: [paste the link your coach gave you]"
-  Claude Code will download the project and move into the folder for you.
+> "Clone https://github.com/jess835/ai-authority-engine and open it"
 
-- **A zip file.** Unzip it, then open that folder in Claude Code.
-
-Either way, you finish this step with the project open in Claude Code.
+Claude Code downloads the project and moves into the folder for you. That is the whole
+step. You finish with the project open in Claude Code.
 
 ---
 

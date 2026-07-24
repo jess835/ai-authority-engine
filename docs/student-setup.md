@@ -130,29 +130,18 @@ git --version
 
 ## Part 3 — Download the code and install it
 
-Your coach will give you a **repository link** (a web address for the code) or a
-**zip file**. Use whichever you were given.
-
-**If you got a repository link:** in Terminal or Command Prompt, type this (replace
-the link with the one you were given), pressing Enter after each line:
+In Terminal or Command Prompt, type these three lines, pressing Enter after each:
 
 ```
-git clone <the-repository-link-you-were-given>
+git clone https://github.com/jess835/ai-authority-engine
 cd ai-authority-engine
 npm install
 ```
 
-**If you got a zip file:** unzip it, then in Terminal or Command Prompt navigate into
-the folder and install. For example:
-
-```
-cd Downloads/ai-authority-engine
-npm install
-```
-
-`npm install` downloads everything the tool needs, including the audio compressor. It
-runs for a minute or two. When it finishes and returns you to a normal prompt, you are
-done with this part.
+The first line downloads the code, the second moves you into the folder, and the third
+installs everything the tool needs (including the audio compressor). `npm install` runs
+for a minute or two. When it finishes and returns you to a normal prompt, you are done
+with this part.
 
 ---
 
