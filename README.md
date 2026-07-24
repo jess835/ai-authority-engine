@@ -19,6 +19,15 @@ dependency (transcription, LLM, publishing) sits behind one swappable interface.
 - [x] Run logging to `logs/runs.jsonl` (no silent missed triggers)
 - [ ] Full live run (detect -> Whisper -> Notion) — needs API keys, see Setup
 
+**Week 2 — Generation: built, wiring proven offline.**
+
+- [x] LLM behind one interface (OpenAI now, Claude swappable) — `src/lib/llm.ts`
+- [x] Brief + 18 asset prompts as editable files in `prompts/` (section 7)
+- [x] Generator: transcript -> Brief -> 18 assets -> Notion Assets DB, each with an approval status
+- [x] Per-asset review policy (3 mechanical assets auto-approve, 15 wait for a human)
+- [x] Offline dry-run proves all 18 prompts assemble and route correctly (`npm run generate -- --dry-run --file tests/sample-transcript.md`)
+- [ ] Full live run (transcript -> Brief + 18 assets) — needs OPENAI_API_KEY + Notion keys
+
 Pilot client: **E-Forge With Cory Long** (`https://anchor.fm/s/106844750/podcast/rss`),
 weekly, drops Thursday.
 
@@ -42,9 +51,15 @@ npm run setup:notion           # one-time: create the client's Notion databases
 npm run ingest                 # newest unprocessed episode -> transcribe -> Notion
 npm run ingest -- --latest 3   # newest 3 unprocessed episodes
 npm run ingest -- --feed <url> # a different feed
+
+# Week 2 — generation
+npm run generate                                              # every transcribed source -> Brief + 18 assets
+npm run generate -- --source <notion-page-id>                # one specific source
+npm run generate -- --dry-run --file tests/sample-transcript.md  # offline wiring check, no keys
 ```
 
 Ingestion is idempotent: an episode already in Notion is skipped on re-runs.
+Editing an asset's output is just editing its file in `prompts/`, no code change.
 
 ## Always-on (production)
 

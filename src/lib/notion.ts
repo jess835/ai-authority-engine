@@ -155,3 +155,93 @@ export async function setSourceStatus(pageId: string, status: SourceStatus) {
     properties: { Status: { select: { name: status } } },
   });
 }
+
+// --- Generation (Week 2) ---
+
+export interface SourceRef {
+  id: string;
+  title: string;
+}
+
+/** List Source rows with a given status (e.g. everything ready to generate). */
+export async function listSourcesByStatus(status: SourceStatus): Promise<SourceRef[]> {
+  const res = await notion().databases.query({
+    database_id: config.sourcesDbId(),
+    filter: { property: "Status", select: { equals: status } },
+  });
+  return res.results.map((p: any) => ({
+    id: p.id,
+    title: p.properties?.Title?.title?.[0]?.plain_text ?? "(untitled)",
+  }));
+}
+
+/**
+ * Read the transcript back off a Source page. The transcript lives as paragraph
+ * blocks under the "Transcript" heading (see createSource). We collect paragraphs
+ * that follow that heading and stop at the next heading (e.g. an appended Brief).
+ */
+export async function readTranscript(pageId: string): Promise<string> {
+  const n = notion();
+  const paras: string[] = [];
+  let inTranscript = false;
+  let cursor: string | undefined;
+  do {
+    const res = await n.blocks.children.list({ block_id: pageId, start_cursor: cursor, page_size: 100 });
+    for (const block of res.results as any[]) {
+      const type = block.type;
+      if (type === "heading_2") {
+        const heading = block.heading_2?.rich_text?.[0]?.plain_text?.toLowerCase() ?? "";
+        inTranscript = heading === "transcript";
+        continue;
+      }
+      if (inTranscript && type === "paragraph") {
+        const text = (block.paragraph?.rich_text ?? []).map((t: any) => t.plain_text).join("");
+        if (text) paras.push(text);
+      }
+    }
+    cursor = res.has_more ? (res.next_cursor as string) : undefined;
+  } while (cursor);
+  return paras.join("\n").trim();
+}
+
+/** Append the generated Brief to the Source page under a "Brief" heading. */
+export async function appendBriefToSource(pageId: string, brief: string) {
+  const blocks = [
+    { object: "block", type: "heading_2", heading_2: { rich_text: [{ type: "text", text: { content: "Brief" } }] } },
+    ...toParagraphBlocks(brief),
+  ];
+  for (let i = 0; i < blocks.length; i += 100) {
+    await notion().blocks.children.append({ block_id: pageId, children: blocks.slice(i, i + 100) as any });
+  }
+}
+
+export interface AssetInput {
+  sourceId: string;
+  assetType: string; // must match ASSET_TYPES
+  name: string;
+  body: string;
+  approvalStatus: "pending" | "approved" | "rejected" | "published";
+}
+
+/**
+ * Create an Asset row linked to its Source. The full body goes into the page
+ * content (no length limit); the Body property holds a short preview.
+ */
+export async function createAsset(input: AssetInput): Promise<string> {
+  const n = notion();
+  const page = await n.pages.create({
+    parent: { database_id: config.assetsDbId() },
+    properties: {
+      Name: { title: [{ text: { content: input.name.slice(0, 2000) } }] },
+      "Asset Type": { select: { name: input.assetType } },
+      "Approval Status": { select: { name: input.approvalStatus } },
+      Body: { rich_text: [{ text: { content: input.body.slice(0, 1900) } }] },
+      Source: { relation: [{ id: input.sourceId }] },
+    },
+  });
+  const blocks = toParagraphBlocks(input.body);
+  for (let i = 0; i < blocks.length; i += 100) {
+    await n.blocks.children.append({ block_id: page.id, children: blocks.slice(i, i + 100) as any });
+  }
+  return page.id;
+}
