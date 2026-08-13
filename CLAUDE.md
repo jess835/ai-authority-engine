@@ -53,7 +53,22 @@ in their Notion Sources database.
 generate` produces the Brief + 18 assets into the Notion Assets DB for review. Explain
 that 15 of the 18 wait for their approval and 3 low-risk ones auto-approve.
 
-**Step F — Make it automatic.** This is the payoff. Offer to set up a daily scheduled
+**Step F — Review and approve.** After generation, 15 of the 18 assets sit as `pending`
+in the Notion Assets DB. Show them what is pending (`npm run approve`, or point them to
+Notion). They review each in their client's voice, then approve (in Notion by flipping
+the toggle, or `npm run approve -- --approve all`). Nothing publishes while it is pending.
+
+**Step G — Publish.** `npm run publish` sends only the approved assets to their
+destination and stamps each `published`. This needs `PUBLISH_WEBHOOK_URL` set (their own
+CMS/Make/Zapier/n8n endpoint that does the actual posting). If it is blank, tell them
+distribution is not wired yet and their approved assets are waiting; do not fake it.
+
+**Step H — Client dashboard.** `npm run dashboard` builds `dashboard/index.html` from
+Notion: a client-facing view of every asset as generated / pending / approved / published.
+They can open it, host it, or send it to the client. Regenerate it whenever they want a
+fresh snapshot (the daily task can do this too).
+
+**Step I — Make it automatic.** This is the payoff. Offer to set up a daily scheduled
 task so they never run it by hand again. A weekly show only needs one check a day. Use
 your scheduled-task ability to run `npm run ingest` (and optionally `npm run generate`)
 once each morning and report what it found. Confirm what you scheduled in plain words.
@@ -77,4 +92,7 @@ once each morning and report what it found. Confirm what you scheduled in plain 
 - `npm run ingest` — transcribe the newest episode into Notion.
 - `npm run generate` — Brief + 18 assets from transcribed episodes.
 - `npm run generate -- --dry-run --file tests/sample-transcript.md` — offline wiring check.
+- `npm run approve` — list assets pending review (`--approve all` / `--approve <id>` / `--reject <id>`).
+- `npm run publish` — send approved assets to their destination (needs `PUBLISH_WEBHOOK_URL`).
+- `npm run dashboard` — build the client dashboard (`--sample` previews it with no keys).
 - `npm run setup:notion` — create the client's Notion databases (once).

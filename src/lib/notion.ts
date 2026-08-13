@@ -245,3 +245,87 @@ export async function createAsset(input: AssetInput): Promise<string> {
   }
   return page.id;
 }
+
+// --- Approval + distribution (Week 3) ---
+
+export type ApprovalStatus = "pending" | "approved" | "rejected" | "published";
+
+export interface AssetRow {
+  id: string;
+  name: string;
+  assetType: string;
+  approval: ApprovalStatus;
+  destination: string | null;
+  publishedUrl: string | null;
+  sourceTitle: string | null;
+}
+
+function assetTitle(p: any): string {
+  return p.properties?.Name?.title?.[0]?.plain_text ?? "(untitled)";
+}
+
+function readRow(p: any): AssetRow {
+  return {
+    id: p.id,
+    name: assetTitle(p),
+    assetType: p.properties?.["Asset Type"]?.select?.name ?? "",
+    approval: (p.properties?.["Approval Status"]?.select?.name ?? "pending") as ApprovalStatus,
+    destination: p.properties?.Destination?.rich_text?.[0]?.plain_text ?? null,
+    publishedUrl: p.properties?.["Published URL"]?.url ?? null,
+    sourceTitle: null,
+  };
+}
+
+/** List Asset rows, optionally filtered by approval status. */
+export async function listAssets(status?: ApprovalStatus): Promise<AssetRow[]> {
+  const n = notion();
+  const rows: AssetRow[] = [];
+  let cursor: string | undefined;
+  do {
+    const res = await n.databases.query({
+      database_id: config.assetsDbId(),
+      ...(status ? { filter: { property: "Approval Status", select: { equals: status } } } : {}),
+      start_cursor: cursor,
+      page_size: 100,
+    });
+    for (const p of res.results as any[]) rows.push(readRow(p));
+    cursor = res.has_more ? (res.next_cursor as string) : undefined;
+  } while (cursor);
+  return rows;
+}
+
+/** Read an asset's full body from its page content. */
+export async function readAssetBody(pageId: string): Promise<string> {
+  const n = notion();
+  const paras: string[] = [];
+  let cursor: string | undefined;
+  do {
+    const res = await n.blocks.children.list({ block_id: pageId, start_cursor: cursor, page_size: 100 });
+    for (const b of res.results as any[]) {
+      if (b.type === "paragraph") {
+        const t = (b.paragraph?.rich_text ?? []).map((x: any) => x.plain_text).join("");
+        if (t) paras.push(t);
+      }
+    }
+    cursor = res.has_more ? (res.next_cursor as string) : undefined;
+  } while (cursor);
+  return paras.join("\n").trim();
+}
+
+export async function setAssetApproval(pageId: string, status: ApprovalStatus) {
+  await notion().pages.update({
+    page_id: pageId,
+    properties: { "Approval Status": { select: { name: status } } },
+  });
+}
+
+/** Mark an asset published, recording its destination and live URL. */
+export async function setAssetPublished(pageId: string, destination: string, url?: string) {
+  const props: Record<string, any> = {
+    "Approval Status": { select: { name: "published" } },
+    Destination: { rich_text: [{ text: { content: destination } }] },
+    "Published At": { date: { start: new Date().toISOString() } },
+  };
+  if (url) props["Published URL"] = { url };
+  await notion().pages.update({ page_id: pageId, properties: props });
+}

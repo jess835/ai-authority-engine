@@ -28,6 +28,15 @@ dependency (transcription, LLM, publishing) sits behind one swappable interface.
 - [x] Offline dry-run proves all 18 prompts assemble and route correctly (`npm run generate -- --dry-run --file tests/sample-transcript.md`)
 - [ ] Full live run (transcript -> Brief + 18 assets) — needs OPENAI_API_KEY + Notion keys
 
+**Week 3 — Distribution: built, dashboard proven offline.**
+
+- [x] Approval gate, Notion-native (no Slack app): approve in Notion or via `npm run approve`
+- [x] Publishing behind one interface — generic outbound webhook + Bing URL submit — `src/distribute/`
+- [x] Only `approved` assets ever publish; each is stamped `published` with its live URL
+- [x] Client dashboard: self-contained HTML from the Notion Assets DB — `npm run dashboard`
+- [x] Dashboard design proven with `npm run dashboard -- --sample` (no keys, writes `dashboard/index.html`)
+- [ ] Full live loop (approve -> publish -> dashboard) — needs Notion keys + `PUBLISH_WEBHOOK_URL`
+
 Pilot client: **E-Forge With Cory Long** (`https://anchor.fm/s/106844750/podcast/rss`),
 weekly, drops Thursday.
 
@@ -56,6 +65,13 @@ npm run ingest -- --feed <url> # a different feed
 npm run generate                                              # every transcribed source -> Brief + 18 assets
 npm run generate -- --source <notion-page-id>                # one specific source
 npm run generate -- --dry-run --file tests/sample-transcript.md  # offline wiring check, no keys
+
+# Week 3 — approval, distribution, dashboard
+npm run approve                       # list assets pending review
+npm run approve -- --approve all      # approve every pending asset (or --approve/--reject <id>)
+npm run publish                       # send approved assets to their destination, stamp published
+npm run dashboard                     # build the client dashboard (dashboard/index.html) from Notion
+npm run dashboard -- --sample         # preview the dashboard design with mock data, no keys
 ```
 
 Ingestion is idempotent: an episode already in Notion is skipped on re-runs.

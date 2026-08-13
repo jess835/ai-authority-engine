@@ -5,3 +5,4 @@ data/
 *.local
 .DS_Store
 tmp/
+dashboard/index.html

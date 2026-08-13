@@ -8,6 +8,9 @@
     "detect": "tsx src/ingest/detect.ts",
     "ingest": "tsx src/ingest/index.ts",
     "generate": "tsx src/generate/index.ts",
+    "approve": "tsx src/approve/index.ts",
+    "publish": "tsx src/distribute/index.ts",
+    "dashboard": "tsx src/dashboard/build.ts",
     "setup:notion": "tsx scripts/setup-notion.ts",
     "probe": "tsx scripts/probe-audio.ts"
   },
