@@ -76,11 +76,13 @@ npm run dashboard                     # build the client dashboard (dashboard/in
 npm run dashboard -- --sample         # preview the dashboard design with mock data, no keys
 ```
 
-Distribution uses no Make/Zapier/n8n. The default is the paste pack (`npm run handoff`):
-approved assets grouped by platform with copy buttons. Two destinations can auto-publish
-in code if switched on (the client's CMS, and Bing). Everything else is a quick paste,
-because LinkedIn/Medium/Substack have no clean API for anyone. `npm run publish` remains as
-an optional direct-webhook path for power users.
+Distribution uses no Make/Zapier/n8n. `npm run publish` auto-posts every approved asset
+whose platform you have wired, each via that platform's own API in code: WordPress (website)
++ Bing indexing, and optionally X, Facebook, and LinkedIn posts. Automation is progressive
+and credential-gated: anything not wired falls back to the paste pack (`npm run handoff`),
+so nothing breaks. Instagram (no text API) and LinkedIn/Medium/Substack articles have no API
+for anyone, so those stay a paste or use the browser flow. Full setup per platform:
+[docs/student-automated-publishing-sop.md](docs/student-automated-publishing-sop.md).
 
 Ingestion is idempotent: an episode already in Notion is skipped on re-runs.
 Editing an asset's output is just editing its file in `prompts/`, no code change.

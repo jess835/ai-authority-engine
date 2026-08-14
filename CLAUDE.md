@@ -64,11 +64,13 @@ platform, each with an Open link to the posting screen, a Copy button, and a pro
 box. If the student asks to be walked through it (or seems unsure), do exactly that: go
 platform by platform in order (website first, highest value; then YouTube, LinkedIn, Medium,
 social), tell them which link to open and what to paste where, and wait for them to confirm
-each before moving on. Most platforms are a quick paste because LinkedIn/Medium/Substack
-have no clean API for anyone. Two destinations can auto-publish in code if switched on: the
-client's CMS (a direct publisher, wire it per their CMS) and Bing (`npm run index -- <url>`).
-Never reach for Make/Zapier; if they want more automated, add a direct code publisher for
-their specific CMS. Details: `docs/student-distribution-sop.md`.
+each before moving on. Run `npm run publish` first: it auto-posts every asset whose
+platform is wired (WordPress + Bing, and optionally X/Facebook/LinkedIn posts) via each
+platform's own API, and leaves the rest for the paste pack. Then `npm run handoff` for what
+remains. Instagram and LinkedIn/Medium/Substack articles have no API for anyone: paste, or
+the browser flow (Claude fills the editor, the human clicks Publish). Never reach for
+Make/Zapier. Wiring each platform: `docs/student-automated-publishing-sop.md`. Weekly flow
+and paste pack: `docs/student-distribution-sop.md`.
 
 **Step H — Client dashboard.** `npm run dashboard` builds `dashboard/index.html` from
 Notion: a client-facing view of every asset as generated / pending / approved / published.
