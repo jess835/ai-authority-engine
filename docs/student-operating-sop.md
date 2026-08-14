@@ -82,10 +82,13 @@ When you are happy with your approved pile, tell Claude Code:
 
 > "Build the paste pack."
 
-The engine writes a single page (`distribution/ready-to-post.html`) with every approved
-asset grouped by platform in posting order, each with a one-click Copy button. You open it
-and paste each piece into its platform. That is the whole of distribution, with no Make, no
-Zapier, no external tool of any kind. It takes a few minutes.
+The engine writes a single guided page (`distribution/ready-to-post.html`): every approved
+asset grouped by platform in posting order. Each platform has an Open button to the right
+posting screen, each asset has a Copy button and a tick box, and a counter tracks how many
+you have posted. You go down the page: Open, Copy, paste, tick. That is the whole of
+distribution, with no Make, no Zapier, no external tool of any kind, in a few minutes. If
+you prefer, say "walk me through posting this week" and Claude Code leads you platform by
+platform.
 
 Two platforms can post themselves in code if you switch them on (the client's website via
 its CMS, and Bing indexing), so those pastes disappear over time. Everything else is a

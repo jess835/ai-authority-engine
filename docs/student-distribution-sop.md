@@ -55,9 +55,14 @@ these two things.
 
 **1. The paste pack (default, zero tools).** Run `npm run handoff` (or tell Claude Code
 "build the paste pack"). The engine writes a single page, `distribution/ready-to-post.html`,
-with every approved asset grouped by platform in posting order, each with a one-click Copy
-button. You open it and paste each piece into its platform. No API keys, no external tools,
-works on day one for every client and every platform.
+that is a guided worksheet: every approved asset grouped by platform in posting order. Each
+platform has an **Open button** that jumps straight to the right posting screen, a one-line
+"how to post this", and each asset has a **Copy button** and a **tick box** that remembers
+what you have done, with a "3 of 14 posted" counter at the top. So the whole step is: open
+the page, then for each item click Open, click Copy, paste, and tick it off. No API keys, no
+external tools, works on day one for every client and every platform. If you would rather be
+led by the hand, tell Claude Code "walk me through posting this week" and it will take you
+platform by platform.
 
 **2. Direct code publishing (optional upgrade).** Two destinations have clean official
 APIs, so the engine can post to them directly in its own code, no middleman: the client's
