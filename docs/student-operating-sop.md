@@ -86,12 +86,12 @@ Only the approved ones go out. Each one is sent to its destination and then mark
 `published`, with a link to where it went. Any new web page is also submitted to Bing so
 it gets indexed where AI answer engines look.
 
-**An honest note on where things publish.** Some platforms (your client's website, and
-anything wired through your own publishing endpoint) can post automatically. A few
-platforms (LinkedIn, Medium, Substack) do not allow clean automatic posting, so for those
-the engine hands you the finished, approved text and you paste it in. That is a two-minute
-copy and paste, not a rewrite, because the content is already done and approved. Your
-coach can help you connect a publishing endpoint if you want more of it automated.
+Distribution is the messiest part of the whole system, because every platform plays by
+different rules (some post automatically, some you paste by hand). Where each of the 18
+assets goes, and exactly how to get it there, is its own short guide:
+**see the Distribution SOP (`docs/student-distribution-sop.md`).** The one rule to
+remember here: website first, every week, because the transcript, AI-search summary, and
+FAQ living on the client's own site is what AI engines actually cite.
 
 ---
 
