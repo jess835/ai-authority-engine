@@ -80,18 +80,20 @@ accurate. Ten quiet minutes of reading is the service.
 
 When you are happy with your approved pile, tell Claude Code:
 
-> "Publish the approved assets."
+> "Build the paste pack."
 
-Only the approved ones go out. Each one is sent to its destination and then marked
-`published`, with a link to where it went. Any new web page is also submitted to Bing so
-it gets indexed where AI answer engines look.
+The engine writes a single page (`distribution/ready-to-post.html`) with every approved
+asset grouped by platform in posting order, each with a one-click Copy button. You open it
+and paste each piece into its platform. That is the whole of distribution, with no Make, no
+Zapier, no external tool of any kind. It takes a few minutes.
 
-Distribution is the messiest part of the whole system, because every platform plays by
-different rules (some post automatically, some you paste by hand). Where each of the 18
-assets goes, and exactly how to get it there, is its own short guide:
-**see the Distribution SOP (`docs/student-distribution-sop.md`).** The one rule to
-remember here: website first, every week, because the transcript, AI-search summary, and
-FAQ living on the client's own site is what AI engines actually cite.
+Two platforms can post themselves in code if you switch them on (the client's website via
+its CMS, and Bing indexing), so those pastes disappear over time. Everything else is a
+copy and paste, because platforms like LinkedIn and Medium do not let anyone post to them
+cleanly. Where each of the 18 assets goes and exactly how is its own short guide:
+**see the Distribution SOP (`docs/student-distribution-sop.md`).** The one rule to remember
+here: website first, every week, because the transcript, AI-search summary, and FAQ living
+on the client's own site is what AI engines actually cite.
 
 ---
 
@@ -115,7 +117,7 @@ Once you have done it once, the whole thing is a short loop per client:
 
 1. Open the project, ask Claude Code what is pending.
 2. Read and approve (edit anything that needs it).
-3. Say "publish the approved assets."
+3. Say "build the paste pack," then paste each piece into its platform (website first).
 4. Say "update the dashboard" and send it to the client.
 
 That is the service. Fifteen minutes, and your client looks like they are everywhere.
@@ -130,8 +132,8 @@ stuck one is easy to spot and explain:
 - **An episode has no assets yet** — it was transcribed but generation has not run. Ask
   Claude Code to "generate the content for the latest episode."
 - **Assets are stuck on pending** — that is just waiting on you. Review and approve them.
-- **Approved assets did not publish** — your publishing endpoint is probably not connected
-  yet. Ask Claude Code to check, or post those pieces manually for now.
+- **You approved assets but nothing is in the paste pack** — rerun "build the paste pack"
+  after approving. The paste pack only includes approved assets.
 
 Claude Code keeps a log of every run and can read it, so you almost never have to figure
 anything out alone.

@@ -50,19 +50,25 @@ see the plan at a glance.
 
 ## The two ways content goes out
 
-**1. Automatic**, through your own publishing endpoint. If you connect a publishing
-endpoint (covered at the bottom), then "publish the approved assets" pushes those assets
-out for you. In practice this reliably covers the client's website and any scheduler you
-wire up. Any web page it creates is also submitted to Bing automatically.
+No Make, no Zapier, no n8n, no third-party automation tool anywhere. Distribution is just
+these two things.
 
-**2. Manual paste.** A few platforms (LinkedIn, Medium, Substack, and YouTube's own
-fields) do not allow clean automated posting. For these, the engine hands you the finished,
-approved text and you paste it in. This is a two-minute copy and paste, not a rewrite,
-because the words are already written and approved. This is normal and it is not a
-shortcoming, it is how those platforms work for everyone.
+**1. The paste pack (default, zero tools).** Run `npm run handoff` (or tell Claude Code
+"build the paste pack"). The engine writes a single page, `distribution/ready-to-post.html`,
+with every approved asset grouped by platform in posting order, each with a one-click Copy
+button. You open it and paste each piece into its platform. No API keys, no external tools,
+works on day one for every client and every platform.
 
-Most agencies run a mix: website automatic, the rest pasted, until they decide to wire up
-more. You can deliver the full service with zero automation on day one.
+**2. Direct code publishing (optional upgrade).** Two destinations have clean official
+APIs, so the engine can post to them directly in its own code, no middleman: the client's
+website (through its CMS API, for example WordPress) and Bing indexing. Switch these on
+when you want to stop pasting the website. Everything else (LinkedIn, Medium, Substack,
+YouTube fields, social) has no clean API for anyone, so those stay in the paste pack. That
+is not a limitation of this tool, it is how those platforms work for everyone. Make and
+Zapier cannot post to them cleanly either, which is exactly why we do not use them.
+
+You can deliver the full service with the paste pack alone. The direct publisher is a
+convenience you add later, not a requirement.
 
 ---
 
@@ -80,11 +86,11 @@ Everything else amplifies this.
 - **Internal-linking map**: this is not a page. It is a short set of instructions for
   whoever manages the site, telling them which existing pages should link to this one and
   what anchor text to use. Hand it to them or apply it yourself.
-- **Then submit the page to Bing** so it gets indexed (automatic if your endpoint returns
-  the URL, otherwise submit it by hand in Bing Webmaster Tools).
+- **Then submit the page to Bing** so it gets indexed. Run `npm run index -- <page-url>`,
+  or submit it by hand in Bing Webmaster Tools.
 
-Automatic if your endpoint is wired to the client's CMS (WordPress, Webflow, Ghost, and so
-on, directly or through Make/Zapier). Otherwise paste into their CMS. Five minutes.
+Automatic if the direct website publisher is switched on for their CMS (WordPress, Webflow,
+Ghost). Otherwise paste the website assets from the paste pack into their CMS. Five minutes.
 
 ### 2. YouTube (the episode video)
 
@@ -122,9 +128,8 @@ so this is manual.
 - **Instagram**: the captions and the carousel outline (the carousel still needs designing).
 - **Facebook**: the posts.
 
-Automatic if you connect a scheduler (for example Buffer) to your endpoint. Otherwise
-schedule them by hand, or hand them to the client to post. Spread them across the week
-rather than dumping them all at once.
+Copy these from the paste pack and schedule them, or hand them to the client to post.
+Spread them across the week rather than dumping them all at once.
 
 ### 7. Working material (not published directly)
 
@@ -137,27 +142,30 @@ These are not posts. They feed other work:
 
 ---
 
-## Setting up automatic distribution (optional, once per client)
+## The optional direct publishers (code, not Make)
 
-You do not need this to deliver the service, but it removes the pasting over time.
+You do not need these to deliver the service. They just remove the two pastes worth
+automating, and both are plain code in this project, not a third-party tool.
 
-- **Publishing endpoint**: set `PUBLISH_WEBHOOK_URL` in the project to a Make, Zapier, or
-  n8n scenario (or a direct CMS endpoint) that you own. When you publish, the engine sends
-  each approved asset to that endpoint as simple data (its type, its destination, and its
-  text), and your scenario does the actual posting. Start with just the website, then add
-  a social scheduler when you are ready. Your coach can help you build this.
-- **Bing indexing**: set `BING_WEBMASTER_API_KEY` and `BING_SITE_URL` so new pages are
-  submitted for indexing automatically. This is where AI answer engines look, so it is
-  worth doing.
+- **Website (direct code):** the client's CMS almost certainly has its own API (WordPress,
+  Webflow, and Ghost all do). A small publisher in this project posts the page straight to
+  their site, no middleman. Tell your coach which CMS the client uses and they switch it on.
+  Until then, paste the website assets from the paste pack.
+- **Bing indexing (direct code):** once a page is live, run `npm run index -- <page-url>`
+  to submit it to Bing (set `BING_WEBMASTER_API_KEY` and `BING_SITE_URL` in `.env` once).
+  This is where AI answer engines look, so it is worth doing. You can also submit URLs by
+  hand in Bing Webmaster Tools.
 
-Until you set these, everything still works. The engine simply keeps your approved assets
-ready and you paste them, and you can submit URLs to Bing by hand.
+That is the entire automation story: two code publishers you can turn on, and a paste pack
+for everything else. Nothing else to install, subscribe to, or maintain.
 
 ---
 
 ## Your weekly distribution checklist
 
-Do them in this order. Website first is deliberate, it is the highest-value step.
+First run `npm run handoff` and open `distribution/ready-to-post.html`. That is your
+worksheet: everything approved, grouped by platform, with copy buttons. Then work down it
+in this order. Website first is deliberate, it is the highest-value step.
 
 1. **Website**: publish the AI-search summary and FAQ onto the episode page, set the title,
    apply the internal links. Submit the page URL to Bing.
@@ -168,5 +176,5 @@ Do them in this order. Website first is deliberate, it is the highest-value step
 6. **Working material**: hand off clip ideas, quotes, the PDF outline.
 7. **Dashboard**: update it and send it to the client so they see it all went live.
 
-That is the full distribution. Once your website endpoint is connected, steps 1 and much of
-5 happen on their own, and your weekly job shrinks to a few pastes and a review.
+That is the full distribution. Once the direct website publisher is switched on, step 1
+happens on its own, and your weekly job shrinks to a few pastes and a review.

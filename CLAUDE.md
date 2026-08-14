@@ -58,10 +58,14 @@ in the Notion Assets DB. Show them what is pending (`npm run approve`, or point 
 Notion). They review each in their client's voice, then approve (in Notion by flipping
 the toggle, or `npm run approve -- --approve all`). Nothing publishes while it is pending.
 
-**Step G — Publish.** `npm run publish` sends only the approved assets to their
-destination and stamps each `published`. This needs `PUBLISH_WEBHOOK_URL` set (their own
-CMS/Make/Zapier/n8n endpoint that does the actual posting). If it is blank, tell them
-distribution is not wired yet and their approved assets are waiting; do not fake it.
+**Step G — Distribute (paste pack, no Make/Zapier/n8n).** Run `npm run handoff` to build
+`distribution/ready-to-post.html`: every approved asset grouped by platform, in posting
+order, with copy buttons. Open it for them and walk them down it: website first (highest
+value), then YouTube, LinkedIn, Medium, social. Most platforms are a quick paste because
+LinkedIn/Medium/Substack have no clean API for anyone. Two destinations can auto-publish in
+code if switched on: the client's CMS (a direct publisher, wire it per their CMS) and Bing
+(`npm run index -- <page-url>`). Do not reach for Make/Zapier; if they want more automated,
+add a direct code publisher for their specific CMS. Details: `docs/student-distribution-sop.md`.
 
 **Step H — Client dashboard.** `npm run dashboard` builds `dashboard/index.html` from
 Notion: a client-facing view of every asset as generated / pending / approved / published.
@@ -93,6 +97,8 @@ once each morning and report what it found. Confirm what you scheduled in plain 
 - `npm run generate` — Brief + 18 assets from transcribed episodes.
 - `npm run generate -- --dry-run --file tests/sample-transcript.md` — offline wiring check.
 - `npm run approve` — list assets pending review (`--approve all` / `--approve <id>` / `--reject <id>`).
-- `npm run publish` — send approved assets to their destination (needs `PUBLISH_WEBHOOK_URL`).
+- `npm run handoff` — build the paste pack of approved assets (`--sample` previews it, no keys).
+- `npm run index -- <url>` — submit a live page URL to Bing for indexing (code, no Make).
+- `npm run publish` — optional direct-webhook publish for power users (needs `PUBLISH_WEBHOOK_URL`).
 - `npm run dashboard` — build the client dashboard (`--sample` previews it with no keys).
 - `npm run setup:notion` — create the client's Notion databases (once).

@@ -69,10 +69,18 @@ npm run generate -- --dry-run --file tests/sample-transcript.md  # offline wirin
 # Week 3 — approval, distribution, dashboard
 npm run approve                       # list assets pending review
 npm run approve -- --approve all      # approve every pending asset (or --approve/--reject <id>)
-npm run publish                       # send approved assets to their destination, stamp published
+npm run handoff                       # build the paste pack (ready-to-post.html) from approved assets
+npm run handoff -- --sample           # preview the paste pack with mock data, no keys
+npm run index -- <page-url>           # submit a live page URL to Bing for indexing (code, no Make)
 npm run dashboard                     # build the client dashboard (dashboard/index.html) from Notion
 npm run dashboard -- --sample         # preview the dashboard design with mock data, no keys
 ```
+
+Distribution uses no Make/Zapier/n8n. The default is the paste pack (`npm run handoff`):
+approved assets grouped by platform with copy buttons. Two destinations can auto-publish
+in code if switched on (the client's CMS, and Bing). Everything else is a quick paste,
+because LinkedIn/Medium/Substack have no clean API for anyone. `npm run publish` remains as
+an optional direct-webhook path for power users.
 
 Ingestion is idempotent: an episode already in Notion is skipped on re-runs.
 Editing an asset's output is just editing its file in `prompts/`, no code change.
